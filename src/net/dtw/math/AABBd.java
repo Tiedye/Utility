@@ -5,7 +5,7 @@ package net.dtw.math;
  * Represents an axis aligned bounding box.
  * @author Daniel <tiedye1@hotmail.com>
  */
-public class AABBd {
+public class AABBd extends Boundsd{
     
     private double top;
     private double bottom;
@@ -164,11 +164,31 @@ public class AABBd {
         updateSizeY();
     }
     
+    @Override
     public boolean inBounds(Vec2d p) {
         updateZero();
         if (zero) return false;
         updateBounds();
         return top > p.y && bottom <= p.y && right > p.x && left <= p.x;
+    }
+    @Override
+    public Ray2d[] getSides() {
+        return new Ray2d[]{new Ray2d(new Vec2d(top, left), new Vec2d(top, right)),
+            new Ray2d(new Vec2d(top, right), new Vec2d(bottom, right)),
+            new Ray2d(new Vec2d(bottom, right), new Vec2d(bottom, left)),
+            new Ray2d(new Vec2d(bottom, left), new Vec2d(top, left))};
+    }
+    @Override
+    public Vec2d[] getPoints() {
+        return new Vec2d[]{new Vec2d(top, left), new Vec2d(top, right), new Vec2d(bottom, right), new Vec2d(bottom, left)};
+    }
+    @Override
+    public double[] getRadi() {
+        return new double[]{0, 0, 0, 0};
+    }
+    
+    public boolean checkInersection(AABBd other){
+        return bottom < other.top && top > other.bottom && right > other.left && left < other.right;
     }
     
     public AABBd intersect (AABBd ab) {
@@ -351,6 +371,11 @@ public class AABBd {
     
     public AABBd copy(){
         return new AABBd(top, bottom, right, left);
+    }
+    
+    @Override
+    public AABBd getAABB(){
+        return this;
     }
     
 }
