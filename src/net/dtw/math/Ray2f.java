@@ -11,27 +11,27 @@ import java.util.Objects;
  *
  * @author 068616374
  */
-public class Ray2d {
-    public Vec2d a;
-    public Vec2d b;
+public class Ray2f {
+    public Vec2f a;
+    public Vec2f b;
 
-    public Ray2d() {
-        this(new Vec2d(), new Vec2d());
+    public Ray2f() {
+        this(new Vec2f(), new Vec2f());
     }
 
-    public Ray2d(Vec2d a, Vec2d b) {
+    public Ray2f(Vec2f a, Vec2f b) {
         this.a = a;
         this.b = b;
     }
     
-    public double distance(Vec2d p){
-        Vec2d ab = b.diff(a);
+    public double distance(Vec2f p){
+        Vec2f ab = b.diff(a);
         return p.diff(a).cross(ab)/ab.magnitude();
     }
     
-    public Vec2d shortestPath(Vec2d p){
-        Vec2d ab = b.diff(a);
-        Vec2d ap = p.diff(a);
+    public Vec2f shortestPath(Vec2f p){
+        Vec2f ab = b.diff(a);
+        Vec2f ap = p.diff(a);
         return ab.orthoNorm().scale(ap.cross(ab)/ab.magnitude());
     }
 
@@ -51,7 +51,7 @@ public class Ray2d {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Ray2d other = (Ray2d) obj;
+        final Ray2f other = (Ray2f) obj;
         if (!Objects.equals(this.a, other.a)) {
             return false;
         }

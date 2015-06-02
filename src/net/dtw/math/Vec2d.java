@@ -9,13 +9,28 @@ public class Vec2d {
     
     public double x;
     public double y;
-
+    
+    private double mx;
+    private double my;
+    private double mag;
+    
+    public static Vec2d infVec() {
+        Vec2d v = new Vec2d();
+        v.mx = v.x;
+        v.my = v.y;
+        v.mag = Double.POSITIVE_INFINITY;
+        return v;
+    }
+    
     public Vec2d(double x, double y) {
         this.x = x;
         this.y = y;
     }
     public Vec2d() {
         this(0, 0);
+        mx = x;
+        my = y;
+        mag = 0.0;
     }
     
     public Vec2d sum(Vec2d v) {
@@ -28,7 +43,13 @@ public class Vec2d {
         return new Vec2d(x - v.x, y - v.y);
     }
     public Vec2d scale(double n) {
-        return new Vec2d(x*n, y*n);
+        Vec2d nv = new Vec2d(x*n, y*n);
+        if (x == mx && y == my) {
+            nv.mx = nv.x;
+            nv.my = nv.y;
+            nv.mag = mag*n;
+        }
+        return nv;
     }
     public Vec2d rotate(double r) {
         double sinr = java.lang.Math.sin(r);
@@ -36,7 +57,10 @@ public class Vec2d {
         return new Vec2d(cosr * x - sinr * y, sinr * x + cosr * y);
     }
     public double magnitude() {
-        return Math.hypot(x, y);
+        if (mx != x || my != y) mag = Math.hypot(x, y);
+        mx = x;
+        my = y;
+        return mag;        
     }
     public double distance(double x, double y) {
         return Math.hypot(this.x - x, this.y - y);
@@ -64,6 +88,30 @@ public class Vec2d {
     }
     public double cross(Vec2d v) {
         return x*v.y - y*v.x;
+    }
+    public Vec2d orthoNorm(){
+        Vec2d nv = new Vec2d(-y/magnitude(), x/magnitude());
+        nv.mx = nv.x;
+        nv.my = nv.y;
+        nv.mag = 1.0;
+        return nv;
+    }
+    public Vec2d norm() {
+        Vec2d nv = new Vec2d(x/magnitude(), y/magnitude());
+        nv.mx = nv.x;
+        nv.my = nv.y;
+        nv.mag = 1.0;
+        return nv;
+    }
+    public Vec2d retract(double d) {
+        Vec2d n = norm();
+        n.scale(magnitude() - d);
+        return n;
+    }
+    public Vec2d extend(double d) {
+        Vec2d n = norm();
+        n.scale(magnitude() + d);
+        return n;
     }
 
     @Override
@@ -94,7 +142,11 @@ public class Vec2d {
     }
     
     public Vec2d copy(){
-        return new Vec2d(x, y);
+        Vec2d v = new Vec2d(x, y);
+        v.mx = mx;
+        v.my = my;
+        v.mag = mag;
+        return v;
     }
     
 }
