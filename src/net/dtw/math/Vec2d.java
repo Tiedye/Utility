@@ -21,6 +21,13 @@ public class Vec2d {
         v.mag = Double.POSITIVE_INFINITY;
         return v;
     }
+    public static Vec2d nInfVec() {
+        Vec2d v = new Vec2d();
+        v.mx = v.x;
+        v.my = v.y;
+        v.mag = Double.NEGATIVE_INFINITY;
+        return v;
+    }
     
     public Vec2d(double x, double y) {
         this.x = x;
@@ -105,12 +112,12 @@ public class Vec2d {
     }
     public Vec2d retract(double d) {
         Vec2d n = norm();
-        n.scale(magnitude() - d);
+        n = n.scale(magnitude() - d);
         return n;
     }
     public Vec2d extend(double d) {
         Vec2d n = norm();
-        n.scale(magnitude() + d);
+        n = n.scale(magnitude() + d);
         return n;
     }
 

@@ -32,7 +32,11 @@ public class Ray2d {
     public Vec2d shortestPath(Vec2d p){
         Vec2d ab = b.diff(a);
         Vec2d ap = p.diff(a);
-        return ab.orthoNorm().scale(ap.cross(ab)/ab.magnitude());
+        return ab.orthoNorm().scale(ab.cross(ap)/ab.magnitude());
+    }
+    
+    public Vec2d getDirection(){
+        return b.diff(a);
     }
 
     @Override
@@ -60,6 +64,10 @@ public class Ray2d {
         }
         return true;
     }
-    
+
+    @Override
+    public String toString() {
+        return a + ", " + b;
+    }
     
 }

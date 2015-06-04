@@ -173,14 +173,14 @@ public class AABBd extends Boundsd{
     }
     @Override
     public Ray2d[] getSides() {
-        return new Ray2d[]{new Ray2d(new Vec2d(top, left), new Vec2d(top, right)),
-            new Ray2d(new Vec2d(top, right), new Vec2d(bottom, right)),
-            new Ray2d(new Vec2d(bottom, right), new Vec2d(bottom, left)),
-            new Ray2d(new Vec2d(bottom, left), new Vec2d(top, left))};
+        return new Ray2d[]{new Ray2d(new Vec2d(left, top), new Vec2d(right, top)),
+            new Ray2d(new Vec2d(right, top), new Vec2d(right, bottom)),
+            new Ray2d(new Vec2d(right, bottom), new Vec2d(left, bottom)),
+            new Ray2d(new Vec2d(left, bottom), new Vec2d(left, top))};
     }
     @Override
     public Vec2d[] getPoints() {
-        return new Vec2d[]{new Vec2d(top, left), new Vec2d(top, right), new Vec2d(bottom, right), new Vec2d(bottom, left)};
+        return new Vec2d[]{new Vec2d(left, top), new Vec2d(right, top), new Vec2d(right, bottom), new Vec2d(left, bottom)};
     }
     @Override
     public double[] getRadi() {
