@@ -10,8 +10,8 @@ package net.dtw.math;
  * @author 068616374
  */
 public class Circled extends Boundsd {
-    private Vec2d center;
-    private double radius;
+    public Vec2d center;
+    public double radius;
     
     private AABBd bounds;
 
@@ -35,13 +35,8 @@ public class Circled extends Boundsd {
     }
 
     @Override
-    public Vec2d[] getPoints() {
-        return new Vec2d[]{center};
-    }
-
-    @Override
-    public double[] getRadi() {
-        return new double[]{radius};
+    public Vec2d[] getVerticies() {
+        return new Vec2d[]{};
     }
     
     @Override

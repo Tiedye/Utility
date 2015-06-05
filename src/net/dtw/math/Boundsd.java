@@ -19,55 +19,158 @@ public abstract class Boundsd {
      * @param o Other bounding area.
      * @return 
      */
-    public Ray2d[] calcSA(Boundsd o){
-        Ray2d[] o1s = getSides();
-        Ray2d[] o2s = o.getSides();
-        Vec2d[] o1v = getPoints();
-        Vec2d[] o2v = o.getPoints();
-        double[] o1r = getRadi();
-        double[] o2r = o.getRadi();
-        
-        ArrayList<Ray2d> intersectingAxis = new ArrayList<>();
-        
-        VertexLoop:
-        for (int v = 0; v < o2v.length; v++) {
-            Vec2d cv = o2v[v];
-            Vec2d lIntersection = Vec2d.nInfVec();
-            for (Ray2d cr : o1s) {
-                Vec2d cIntersection;
-                cIntersection = cr.shortestPath(cv).retract(o2r[v]);
-                if (cIntersection.magnitude() > 0) {
-                    continue VertexLoop;
+    // Change return type to Vec2d
+    public Vec2d calcSA(Boundsd o){
+
+        if (this instanceof Circled) {
+            Circled c1 = (Circled)this;
+            if (o instanceof Circled) {
+                Circled c2 = (Circled)o;
+                Vec2d d = c1.center.diff(c2.center);
+                d = d.retract(c1.radius + c2.radius);
+                if (d.magnitude() < 0) return d;
+                else return new Vec2d();
+            } else {
+                Ray2d[] o2s = o.getSides();
+                Vec2d[] o2v = o.getVerticies();
+                // fisrt check ditnce from center to each side ray
+                
+                Vec2d lIntersection = Vec2d.nInfVec();
+
+                for (Ray2d cR : o2s) {
+                    Vec2d intersection = cR.shortestPath(c1.center);
+                    if (intersection.magnitude() > lIntersection.magnitude()) {
+                        lIntersection = intersection;
+                    }
                 }
-                if (cIntersection.magnitude() > lIntersection.magnitude()) {
-                    lIntersection = cIntersection;
+                
+                // if the center is in out of the bounds check for distances to verticies
+                // find shorest didsnce and keep track of the two sides connected to that points
+                // check if both angles obtuse using dot product
+                if (lIntersection.magnitude() > 0) {
+                    Vec2d minLength = Vec2d.infVec();
+                    int index = 0;
+                    for (int i = 0; i < o2v.length; i++) {
+                        Vec2d d = c1.center.diff(o2v[i]);
+                        if (d.magnitude() < minLength.magnitude()) {
+                            minLength = d;
+                            index = i;
+                        }
+                    }
+                    Vec2d rs = o2s[index].getDirection();
+                    Vec2d ls = o2s[index - 1 < 0 ? o2v.length - 1 : index - 1].getDirection().scale(-1.0);
+                    if (minLength.dot(rs) < 0 && minLength.dot(rs) < 0) {
+                        lIntersection = minLength;
+                    }
+                }
+                lIntersection = lIntersection.retract(c1.radius);
+                if (lIntersection.magnitude() < 0) {
+                    return lIntersection;
+                }else{
+                    return new Vec2d();
                 }
             }
-            intersectingAxis.add(new Ray2d(cv, cv.sum(lIntersection.scale(-1.0))));
-        }
-        VertexLoop:
-        for (int v = 0; v < o1v.length; v++) {
-            Vec2d cv = o1v[v]; 
-            Vec2d lIntersection = Vec2d.nInfVec();
-            for (Ray2d cr : o2s) {
-                Vec2d cIntersection;
-                cIntersection = cr.shortestPath(cv).retract(o1r[v]);
-                if (cIntersection.magnitude() > 0) {
-                    continue VertexLoop;
+        } else {
+            Ray2d[] o1s = getSides();
+            Vec2d[] o1v = getVerticies();
+            if (o instanceof Circled) {
+                Circled c2 = (Circled)o;
+                
+                // fisrt check ditnce from center to each side ray
+                
+                Vec2d lIntersection = Vec2d.nInfVec();
+
+                for (Ray2d cR : o1s) {
+                    Vec2d intersection = cR.shortestPath(c2.center);
+                    if (intersection.magnitude() > lIntersection.magnitude()) {
+                        lIntersection = intersection;
+                    }
                 }
-                if (cIntersection.magnitude() > lIntersection.magnitude()) {
-                    lIntersection = cIntersection;
+                
+                // if the center is in out of the bounds check for distances to verticies
+                // find shorest didsnce and keep track of the two sides connected to that points
+                // check if both angles obtuse using dot product
+                if (lIntersection.magnitude() > 0) {
+                    Vec2d minLength = Vec2d.infVec();
+                    int index = 0;
+                    for (int i = 0; i < o1v.length; i++) {
+                        Vec2d d = c2.center.diff(o1v[i]);
+                        if (d.magnitude() < minLength.magnitude()) {
+                            minLength = d;
+                            index = i;
+                        }
+                    }
+                    Vec2d rs = o1s[index].getDirection();
+                    Vec2d ls = o1s[index - 1 < 0 ? o1v.length - 1 : index - 1].getDirection().scale(-1.0);
+                    if (minLength.dot(rs) < 0 && minLength.dot(rs) < 0) {
+                        lIntersection = minLength;
+                    }
                 }
+                lIntersection = lIntersection.retract(c2.radius);
+                if (lIntersection.magnitude() < 0) {
+                    return lIntersection;
+                }else{
+                    return new Vec2d();
+                }
+            } else {
+                Ray2d[] o2s = o.getSides();
+                Vec2d[] o2v = o.getVerticies();
+                Vec2d lIntersection = Vec2d.nInfVec();
+
+                for (Ray2d cR : o1s) {
+                    Vec2d mIntersection = Vec2d.infVec();
+                    for (Vec2d cV : o2v) {
+                        Vec2d cIntersection;
+                        cIntersection = cR.shortestPath(cV);
+                        if (cIntersection.magnitude() > 0) {
+                            continue;
+                        }
+                        if (cIntersection.magnitude() < mIntersection.magnitude()) {
+                            mIntersection = cIntersection;
+                        }
+                    }
+                    if (mIntersection.magnitude() > 0) {
+                        return new Vec2d();
+                    }
+                    if (mIntersection.magnitude() > lIntersection.magnitude()) {
+                        lIntersection = mIntersection;
+                    }
+                }
+                for (Ray2d cR : o2s) {
+                    Vec2d mIntersection = Vec2d.infVec();
+                    for (Vec2d cV : o1v) {
+                        Vec2d cIntersection;
+                        cIntersection = cR.shortestPath(cV);
+                        if (cIntersection.magnitude() < mIntersection.magnitude()) {
+                            mIntersection = cIntersection;
+                        }
+                    }
+                    if (mIntersection.magnitude() > 0) {
+                        return new Vec2d();
+                    }
+                    if (mIntersection.magnitude() > lIntersection.magnitude()) {
+                        lIntersection = mIntersection;
+                    }
+                }
+                return lIntersection;
             }
-            intersectingAxis.add(new Ray2d(cv, cv.sum(lIntersection.scale(-1.0))));
         }
-        Ray2d[] sa = new Ray2d[intersectingAxis.size()];
-        return intersectingAxis.toArray(sa);
     }
     
+    /*
+    
+    0 index vetex
+        | 0 index side
+        ↓ ↓
+        *---*
+        |   |
+        *---*
+    
+    */
+    
+    
     public abstract Ray2d[] getSides();
-    public abstract Vec2d[] getPoints();
-    public abstract double[] getRadi();
+    public abstract Vec2d[] getVerticies();
     
     public abstract AABBd getAABB();
     
