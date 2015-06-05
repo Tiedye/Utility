@@ -75,6 +75,16 @@ public class Vec3f {
         return new Vec3f(x - v.x, y - v.y, z - v.z);
     }
     /**
+     * Creates a new vector that is this vector minus the given vector composed of the given components.
+     * @param x the given x component
+     * @param y the given y component
+     * @param z the given z component
+     * @return the resultant distance
+     */
+    public Vec3f diff(float x, float y, float z) {
+        return new Vec3f(this.x - x, this.y - y, this.z - z);
+    }
+    /**
      * Creates a new vector that is this vector scaled by a given scalar.
      * @param n the given scalar
      * @return the resultant vector
@@ -88,19 +98,6 @@ public class Vec3f {
      */
     public float magnitude() {
         return (float)Math.cbrt(x*x + y*y + z*z);
-    }
-    /**
-     * Calculates the distance of the vector that is this vector minus the vector composed of the given components.
-     * @param x the given x component
-     * @param y the given y component
-     * @param z the given z component
-     * @return the resultant distance
-     */
-    public float distance(float x, float y, float z) {
-        float dx = this.x - x;
-        float dy = this.y - y;
-        float dz = this.z - z;
-        return (float)Math.cbrt(dx*dx + dy*dy + dz*dz);
     }
     /**
      * Calculates the dot product of this vector and the given component.
@@ -126,10 +123,10 @@ public class Vec3f {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + Float.floatToIntBits(this.x);
-        hash = 97 * hash + Float.floatToIntBits(this.y);
-        hash = 97 * hash + Float.floatToIntBits(this.z);
+        int hash = 3;
+        hash = 79 * hash + Float.floatToIntBits(this.x);
+        hash = 79 * hash + Float.floatToIntBits(this.y);
+        hash = 79 * hash + Float.floatToIntBits(this.z);
         return hash;
     }
 
@@ -153,8 +150,6 @@ public class Vec3f {
         }
         return true;
     }
-
-
     
     /**
      * Creates a copy of this vector.

@@ -5,7 +5,7 @@ package net.dtw.math;
  * Represents an axis aligned bounding box.
  * @author Daniel <tiedye1@hotmail.com>
  */
-public class AABBd extends Boundsd{
+public class AABBd extends Boundd{
     
     private double top;
     private double bottom;
@@ -29,7 +29,19 @@ public class AABBd extends Boundsd{
     // bit 8 zero
     private int updateMask;
 
-    public AABBd(double top, double bottom, double right, double left) {
+    /**
+     * Create an axis aligned bounding box (AABB).
+     * @param top Top side y coordinate
+     * @param bottom Bottom side y coordinate
+     * @param right Right side x coordinate
+     * @param left Left side x coordinate
+     * @return 
+     */
+    public static AABBd newAABB(double top, double bottom, double right, double left){
+        return new AABBd(top, bottom, right, left);
+    }
+    
+    private AABBd(double top, double bottom, double right, double left) {
         if (top < bottom || right < left) {
             zero = true;
             this.top = bottom;
@@ -183,15 +195,33 @@ public class AABBd extends Boundsd{
         return new Vec2d[]{Vec2d.newVec(left, top), Vec2d.newVec(right, top), Vec2d.newVec(right, bottom), Vec2d.newVec(left, bottom)};
     }
     
+    /**
+     * Fast check of the intersection of two bounding boxes.
+     * @param other The other box
+     * @return Weather they intersect
+     */
     public boolean checkInersection(AABBd other){
+        updateBounds();
         return bottom < other.top && top > other.bottom && right > other.left && left < other.right;
     }
     
+    /**
+     * The intersection if this bounding box and the other.
+     * @param ab The other box
+     * @return The result of the union
+     */
     public AABBd intersect (AABBd ab) {
         updateBounds();
-        return new AABBd(top < ab.top ? top : ab.top, bottom > ab.bottom ? bottom : ab.bottom, right < ab.right ? right : ab.right, left > ab.left ? left : ab.left);
+        return AABBd.newAABB(top < ab.top ? top : ab.top, bottom > ab.bottom ? bottom : ab.bottom, right < ab.right ? right : ab.right, left > ab.left ? left : ab.left);
     }
     
+    /**
+     * Translates a box by a given amount.
+     * Note: this modifies a box, and does not create a new one 
+     * @param a The box to be translated
+     * @param v The quantity to translate the box by
+     * @return The first parameter, after translation
+     */
     public static AABBd translate(AABBd a, Vec2d v){
         a.updateCenter();
         Vec2d c = a.getCenterReference();
@@ -200,11 +230,23 @@ public class AABBd extends Boundsd{
         a.invalidateBounds();
         return a;
     }
+    /**
+     * Translates a box by a given vector.
+     * @param v The vector translate it by
+     * @return The new translated box
+     */
     public AABBd translate(Vec2d v){
         updateBounds();
-        return new AABBd(top + v.y, bottom + v.y, right + v.x, left + v.x);
+        return AABBd.newAABB(top + v.y, bottom + v.y, right + v.x, left + v.x);
     }
     
+    /**
+     * Expands a box by a given about, negative values gill expand the box in the other direction.
+     * Note: this modifies a box, and does not create a new one 
+     * @param a The box to be expanded
+     * @param v The vector that represents the expansion
+     * @return The first parameter, after expansion
+     */
     public static AABBd expand(AABBd a, Vec2d v){
         a.updateBounds();
         a.top = v.y > 0 ? a.top + v.y : a.top;
@@ -213,63 +255,121 @@ public class AABBd extends Boundsd{
         a.left = v.x < 0 ? a.left + v.x : a.left;
         return a;
     }
+    /**
+     * Expands a box by a given about, negative values gill expand the box in the other direction.
+     * @param top The amount to expand the top
+     * @param bottom The amount to expand the bottom
+     * @param right The amount to expand the right
+     * @param left The amount to expand the left
+     * @return The new expanded box
+     */
     public AABBd expand(double top, double bottom, double right, double left){
         updateBounds();
-        return new AABBd(this.top + top, this.bottom + bottom, this.right + right, this.left + left);
+        return AABBd.newAABB(this.top + top, this.bottom + bottom, this.right + right, this.left + left);
     }
     
+    /**
+     * Gets the width of the box.
+     * @return The width
+     */
     public double getWidth(){
         updateRight();
         updateLeft();
         return right - left;
     }
+    /**
+     * Gets the height of the box.
+     * @return The width
+     */
     public double getHeight(){
         updateTop();
         updateBottom();
         return top - bottom;
     }
+    /**
+     * Gets the top of the box.
+     * @return The width
+     */
     public double getTop() {
         updateTop();
         return top;
     }
+    /**
+     * Gets the bottom of the box.
+     * @return The width
+     */
     public double getBottom() {
         updateBottom();
         return bottom;
     }
+    /**
+     * Gets the right of the box.
+     * @return The width
+     */
     public double getRight() {
         updateRight();
         return right;
     }
+    /**
+     * Gets the left of the box.
+     * @return The width
+     */
     public double getLeft() {
         updateLeft();
         return left;
     }
 
+    /**
+     * Get a vector that represents the center of the box.
+     * @return The center position
+     */
     public Vec2d getCenterReference() {
         updateCenter();
         return center;
     }
+    /**
+     * Get a vector that represents the size of the box.
+     * @return The size
+     */
     public Vec2d getSizeReference() {
         updateSize();
         return size;
     }
     
+    /** 
+     * Invalidates the bounds, for use when the coordinates or size have been changed manually.
+     */
     public void invalidateBounds(){
         updateMask &= 000011111;
     }
+    /** 
+     * Invalidates the coordinates and size, for use when the bounds have been changed manually.
+     */
     public void invalidateCoords(){
         updateMask &= 111100001;
     }
 
+    /**
+     * Get the center coordinates.
+     * @return The center coordinate
+     */
     public Vec2d getCenter() {
         updateCenter();
         return center.copy();
     }
+    /**
+     * Get the size of the box.
+     * @return The size
+     */
     public Vec2d getSize() {
         updateSize();
         return size.copy();
     }
 
+    /**
+     * Sets the top side of the box.
+     * @param top The top side
+     */
     public void setTop(double top) {
         this.top = top;
         updateMask &= 0b111100000;
@@ -281,6 +381,10 @@ public class AABBd extends Boundsd{
             updateMask |= 0b100000000;
         }
     }
+    /**
+     * Sets the bottom side of the box.
+     * @param bottom The bottom side
+     */
     public void setBottom(double bottom) {
         this.bottom = bottom;
         updateMask &= 0b111100000;
@@ -292,6 +396,10 @@ public class AABBd extends Boundsd{
             updateMask |= 0b010000000;
         }
     }
+    /**
+     * Sets the right side of the box.
+     * @param right The right side
+     */
     public void setRight(double right) {
         this.right = right;
         updateMask &= 0b111100000;
@@ -303,6 +411,10 @@ public class AABBd extends Boundsd{
             updateMask |= 0b001000000;
         }
     }
+    /**
+     * Sets the left side of the box.
+     * @param left The left side
+     */
     public void setLeft(double left) {
         this.left = left;
         updateMask &= 0b111100000;
@@ -315,10 +427,18 @@ public class AABBd extends Boundsd{
         }
     }
     
+    /**
+     * Sets the center coordinate of the box.
+     * @param center The center coordinate
+     */
     public void setCenter(Vec2d center) {
         this.center = center.copy();
         updateMask &= 0b000011111;
     }
+    /**
+     * Sets the size vector of the box.
+     * @param size sThe size vector
+     */
     public void setSize(Vec2d size) {
         this.size = size.copy();
         updateMask &= 0b000011111;
@@ -365,8 +485,13 @@ public class AABBd extends Boundsd{
         return "AABBd:{" + "top=" + top + ", bottom=" + bottom + ", right=" + right + ", left=" + left + '}';
     }
     
+    /**
+     * Creates a copy of the AABB, based off of bounds of the box.
+     * @return 
+     */
     public AABBd copy(){
-        return new AABBd(top, bottom, right, left);
+        updateBounds();
+        return AABBd.newAABB(top, bottom, right, left);
     }
     
     @Override

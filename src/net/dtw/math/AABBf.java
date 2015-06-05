@@ -5,7 +5,7 @@ package net.dtw.math;
  * Represents an axis aligned bounding box.
  * @author Daniel <tiedye1@hotmail.com>
  */
-public class AABBf extends Boundsf{
+public class AABBf extends Boundf {
     
     private float top;
     private float bottom;
@@ -29,7 +29,19 @@ public class AABBf extends Boundsf{
     // bit 8 zero
     private int updateMask;
 
-    public AABBf(float top, float bottom, float right, float left) {
+    /**
+     * Create an axis aligned bounding box (AABB).
+     * @param top Top side y coordinate
+     * @param bottom Bottom side y coordinate
+     * @param right Right side x coordinate
+     * @param left Left side x coordinate
+     * @return 
+     */
+    public static AABBf newAABB(float top, float bottom, float right, float left){
+        return new AABBf(top, bottom, right, left);
+    }
+    
+    private AABBf(float top, float bottom, float right, float left) {
         if (top < bottom || right < left) {
             zero = true;
             this.top = bottom;
@@ -173,29 +185,43 @@ public class AABBf extends Boundsf{
     }
     @Override
     public Ray2f[] getSides() {
-        return new Ray2f[]{new Ray2f(new Vec2f(top, left), new Vec2f(top, right)),
-            new Ray2f(new Vec2f(top, right), new Vec2f(bottom, right)),
-            new Ray2f(new Vec2f(bottom, right), new Vec2f(bottom, left)),
-            new Ray2f(new Vec2f(bottom, left), new Vec2f(top, left))};
+        return new Ray2f[]{Ray2f.newRay(Vec2f.newVec(left, top), Vec2f.newVec(right, top)),
+            Ray2f.newRay(Vec2f.newVec(right, top), Vec2f.newVec(right, bottom)),
+            Ray2f.newRay(Vec2f.newVec(right, bottom), Vec2f.newVec(left, bottom)),
+            Ray2f.newRay(Vec2f.newVec(left, bottom), Vec2f.newVec(left, top))};
     }
     @Override
-    public Vec2f[] getPoints() {
-        return new Vec2f[]{new Vec2f(top, left), new Vec2f(top, right), new Vec2f(bottom, right), new Vec2f(bottom, left)};
-    }
-    @Override
-    public float[] getRadi() {
-        return new float[]{0, 0, 0, 0};
+    public Vec2f[] getVerticies() {
+        return new Vec2f[]{Vec2f.newVec(left, top), Vec2f.newVec(right, top), Vec2f.newVec(right, bottom), Vec2f.newVec(left, bottom)};
     }
     
+    /**
+     * Fast check of the intersection of two bounding boxes.
+     * @param other The other box
+     * @return Weather they intersect
+     */
     public boolean checkInersection(AABBf other){
+        updateBounds();
         return bottom < other.top && top > other.bottom && right > other.left && left < other.right;
     }
     
+    /**
+     * The intersection if this bounding box and the other.
+     * @param ab The other box
+     * @return The result of the union
+     */
     public AABBf intersect (AABBf ab) {
         updateBounds();
-        return new AABBf(top < ab.top ? top : ab.top, bottom > ab.bottom ? bottom : ab.bottom, right < ab.right ? right : ab.right, left > ab.left ? left : ab.left);
+        return AABBf.newAABB(top < ab.top ? top : ab.top, bottom > ab.bottom ? bottom : ab.bottom, right < ab.right ? right : ab.right, left > ab.left ? left : ab.left);
     }
     
+    /**
+     * Translates a box by a given amount.
+     * Note: this modifies a box, and does not create a new one 
+     * @param a The box to be translated
+     * @param v The quantity to translate the box by
+     * @return The first parameter, after translation
+     */
     public static AABBf translate(AABBf a, Vec2f v){
         a.updateCenter();
         Vec2f c = a.getCenterReference();
@@ -204,11 +230,23 @@ public class AABBf extends Boundsf{
         a.invalidateBounds();
         return a;
     }
+    /**
+     * Translates a box by a given vector.
+     * @param v The vector translate it by
+     * @return The new translated box
+     */
     public AABBf translate(Vec2f v){
         updateBounds();
-        return new AABBf(top + v.y, bottom + v.y, right + v.x, left + v.x);
+        return AABBf.newAABB(top + v.y, bottom + v.y, right + v.x, left + v.x);
     }
     
+    /**
+     * Expands a box by a given about, negative values gill expand the box in the other direction.
+     * Note: this modifies a box, and does not create a new one 
+     * @param a The box to be expanded
+     * @param v The vector that represents the expansion
+     * @return The first parameter, after expansion
+     */
     public static AABBf expand(AABBf a, Vec2f v){
         a.updateBounds();
         a.top = v.y > 0 ? a.top + v.y : a.top;
@@ -217,63 +255,121 @@ public class AABBf extends Boundsf{
         a.left = v.x < 0 ? a.left + v.x : a.left;
         return a;
     }
+    /**
+     * Expands a box by a given about, negative values gill expand the box in the other direction.
+     * @param top The amount to expand the top
+     * @param bottom The amount to expand the bottom
+     * @param right The amount to expand the right
+     * @param left The amount to expand the left
+     * @return The new expanded box
+     */
     public AABBf expand(float top, float bottom, float right, float left){
         updateBounds();
-        return new AABBf(this.top + top, this.bottom + bottom, this.right + right, this.left + left);
+        return AABBf.newAABB(this.top + top, this.bottom + bottom, this.right + right, this.left + left);
     }
     
+    /**
+     * Gets the width of the box.
+     * @return The width
+     */
     public float getWidth(){
         updateRight();
         updateLeft();
         return right - left;
     }
+    /**
+     * Gets the height of the box.
+     * @return The width
+     */
     public float getHeight(){
         updateTop();
         updateBottom();
         return top - bottom;
     }
+    /**
+     * Gets the top of the box.
+     * @return The width
+     */
     public float getTop() {
         updateTop();
         return top;
     }
+    /**
+     * Gets the bottom of the box.
+     * @return The width
+     */
     public float getBottom() {
         updateBottom();
         return bottom;
     }
+    /**
+     * Gets the right of the box.
+     * @return The width
+     */
     public float getRight() {
         updateRight();
         return right;
     }
+    /**
+     * Gets the left of the box.
+     * @return The width
+     */
     public float getLeft() {
         updateLeft();
         return left;
     }
 
+    /**
+     * Get a vector that represents the center of the box.
+     * @return The center position
+     */
     public Vec2f getCenterReference() {
         updateCenter();
         return center;
     }
+    /**
+     * Get a vector that represents the size of the box.
+     * @return The size
+     */
     public Vec2f getSizeReference() {
         updateSize();
         return size;
     }
     
+    /** 
+     * Invalidates the bounds, for use when the coordinates or size have been changed manually.
+     */
     public void invalidateBounds(){
         updateMask &= 000011111;
     }
+    /** 
+     * Invalidates the coordinates and size, for use when the bounds have been changed manually.
+     */
     public void invalidateCoords(){
         updateMask &= 111100001;
     }
 
+    /**
+     * Get the center coordinates.
+     * @return The center coordinate
+     */
     public Vec2f getCenter() {
         updateCenter();
         return center.copy();
     }
+    /**
+     * Get the size of the box.
+     * @return The size
+     */
     public Vec2f getSize() {
         updateSize();
         return size.copy();
     }
 
+    /**
+     * Sets the top side of the box.
+     * @param top The top side
+     */
     public void setTop(float top) {
         this.top = top;
         updateMask &= 0b111100000;
@@ -285,6 +381,10 @@ public class AABBf extends Boundsf{
             updateMask |= 0b100000000;
         }
     }
+    /**
+     * Sets the bottom side of the box.
+     * @param bottom The bottom side
+     */
     public void setBottom(float bottom) {
         this.bottom = bottom;
         updateMask &= 0b111100000;
@@ -296,6 +396,10 @@ public class AABBf extends Boundsf{
             updateMask |= 0b010000000;
         }
     }
+    /**
+     * Sets the right side of the box.
+     * @param right The right side
+     */
     public void setRight(float right) {
         this.right = right;
         updateMask &= 0b111100000;
@@ -307,6 +411,10 @@ public class AABBf extends Boundsf{
             updateMask |= 0b001000000;
         }
     }
+    /**
+     * Sets the left side of the box.
+     * @param left The left side
+     */
     public void setLeft(float left) {
         this.left = left;
         updateMask &= 0b111100000;
@@ -319,10 +427,18 @@ public class AABBf extends Boundsf{
         }
     }
     
+    /**
+     * Sets the center coordinate of the box.
+     * @param center The center coordinate
+     */
     public void setCenter(Vec2f center) {
         this.center = center.copy();
         updateMask &= 0b000011111;
     }
+    /**
+     * Sets the size vector of the box.
+     * @param size sThe size vector
+     */
     public void setSize(Vec2f size) {
         this.size = size.copy();
         updateMask &= 0b000011111;
@@ -331,7 +447,7 @@ public class AABBf extends Boundsf{
     @Override
     public int hashCode() {
         updateBounds();
-        int hash = 5;
+        int hash = 7;
         hash = 53 * hash + Float.floatToIntBits(this.top);
         hash = 53 * hash + Float.floatToIntBits(this.bottom);
         hash = 53 * hash + Float.floatToIntBits(this.right);
@@ -364,18 +480,25 @@ public class AABBf extends Boundsf{
         return true;
     }
 
+
+
     @Override
     public String toString() {
         updateBounds();
         return "AABBf:{" + "top=" + top + ", bottom=" + bottom + ", right=" + right + ", left=" + left + '}';
     }
     
+    /**
+     * Creates a copy of the AABB, based off of bounds of the box.
+     * @return 
+     */
     public AABBf copy(){
-        return new AABBf(top, bottom, right, left);
+        updateBounds();
+        return AABBf.newAABB(top, bottom, right, left);
     }
-
+    
     @Override
-    public AABBf getAABB() {
+    public AABBf getAABB(){
         return this;
     }
     

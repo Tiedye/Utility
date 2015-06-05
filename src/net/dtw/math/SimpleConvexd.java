@@ -1,42 +1,43 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package net.dtw.math;
 
 /**
- *
- * @author Tiedye <tiedye1@hotmail.com>
+ * Represents a simple, static convex polygon.
+ * @author Daniel <tiedye1@hotmail.com>
  */
-public class SimpleConvexd extends Boundsd {
+public class SimpleConvexd extends Boundd {
     
     private Ray2d[] sides;
-    private Vec2d[] verticies;
+    private Vec2d[] vertices;
     
     private AABBd aabb;
 
-    public SimpleConvexd(Vec2d[] verticies) {
-        this.verticies = verticies;
-        sides = new Ray2d[verticies.length];
+    /**
+     * Initializes the polygon with given vertices.
+     * <b>Important Note: If the points do not form a convex polygon (interpreted in a clockwise fashion), the separating axis calculation will not function!</b>
+     * @param vertices The list of vertices.
+     */
+    public SimpleConvexd(Vec2d[] vertices) {
+        this.vertices = vertices;
+        sides = new Ray2d[vertices.length];
         double mX = Double.POSITIVE_INFINITY;
         double MX = Double.NEGATIVE_INFINITY;
         double mY = Double.POSITIVE_INFINITY;
         double MY = Double.NEGATIVE_INFINITY;
-        for(int i = 0; i < verticies.length; i++){
-            Vec2d v = verticies[i];
+        for(int i = 0; i < vertices.length; i++){
+            Vec2d v = vertices[i];
             mX = v.x < mX ? v.x : mX;
             MX = v.x > MX ? v.x : MX;
             mY = v.y < mY ? v.y : mY;
             MY = v.y > MY ? v.y : MY;
-            sides[i] = Ray2d.newRay(v, verticies[(i+1)%verticies.length]);
+            sides[i] = Ray2d.newRay(v, vertices[(i+1)%vertices.length]);
         }
-        aabb = new AABBd(MY, mY, MX, mX);
+        aabb = AABBd.newAABB(MY, mY, MX, mX);
     }
 
     @Override
     public boolean inBounds(Vec2d p) {
-        return calcSA(new Boundsd() {
+        return calcSA(new Boundd() {
             @Override
             public Ray2d[] getSides() {
                 return new Ray2d[]{};
@@ -59,7 +60,7 @@ public class SimpleConvexd extends Boundsd {
 
     @Override
     public Vec2d[] getVerticies() {
-        return verticies;
+        return vertices;
     }
 
     @Override

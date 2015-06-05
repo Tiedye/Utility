@@ -1,24 +1,35 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package net.dtw.math;
 
 /**
- *
- * @author 068616374
+ * Represents a circle.
+ * @author Daniel <tiedye1@hotmail.com>
  */
-public class Circled extends Boundsd {
+public class Circled extends Boundd {
+    
+    /**
+     * The center of the circle.
+     */
     public Vec2d center;
+    /**
+     * The radius of the circle.
+     */
     public double radius;
     
     private AABBd bounds;
 
+    /**
+     * Creates a unit circle at the origin.
+     */
     public Circled() {
         this(Vec2d.zeroVec(), 1.0);
     }
 
+    /**
+     * Creates a circle with  given center and radius.
+     * @param center The center
+     * @param radius The radius
+     */
     public Circled(Vec2d center, double radius) {
         this.center = center;
         this.radius = radius;
@@ -41,7 +52,7 @@ public class Circled extends Boundsd {
     
     @Override
     public AABBd getAABB(){
-        return new AABBd(center.y + radius, center.y - radius, center.x + radius, center.y + radius);
+        return AABBd.newAABB(center.y + radius, center.y - radius, center.x + radius, center.y + radius);
     }
     
 }

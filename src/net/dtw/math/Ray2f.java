@@ -1,38 +1,71 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package net.dtw.math;
 
 import java.util.Objects;
 
 /**
- *
- * @author 068616374
+ * Represents a ray in 2d space.
+ * @author Daniel <tiedye1@hotmail.com>
  */
 public class Ray2f {
+    /**
+     * Represents the starting point of the ray.
+     */
     public Vec2f a;
+    /**
+     * Represents the ending point of the ray.
+     */
     public Vec2f b;
-
-    public Ray2f() {
-        this(new Vec2f(), new Vec2f());
+    
+    /**
+     * Get a undefined ray that intersects the origin.
+     * @return The ray
+     */
+    public static Ray2f zeroRay(){
+        return newRay(Vec2f.zeroVec(), Vec2f.zeroVec());
+    }
+    /**
+     * Get a ray that goes from one point to another.
+     * @param a The first point
+     * @param b The second point
+     * @return The new ray
+     */
+    public static Ray2f newRay(Vec2f a, Vec2f b){
+        return new Ray2f(a, b);
     }
 
-    public Ray2f(Vec2f a, Vec2f b) {
+    private Ray2f(Vec2f a, Vec2f b) {
         this.a = a;
         this.b = b;
     }
     
-    public double distance(Vec2f p){
+    /**
+     * Find the distance from the ray to a point.
+     * @param p The point
+     * @return The distance
+     */
+    public float distance(Vec2f p){
         Vec2f ab = b.diff(a);
         return p.diff(a).cross(ab)/ab.magnitude();
     }
     
+    /**
+     * Find the shortest vector from the ray to a point.
+     * @param p The point
+     * @return The displacement vector
+     */
     public Vec2f shortestPath(Vec2f p){
         Vec2f ab = b.diff(a);
         Vec2f ap = p.diff(a);
-        return ab.orthoNorm().scale(ap.cross(ab)/ab.magnitude());
+        return ab.orthoNorm().scale(ab.cross(ap)/ab.magnitude());
+    }
+    
+    /**
+     * Returns the vector that is B-A.
+     * @return The resultant vector
+     */
+    public Vec2f direction(){
+        return b.diff(a);
     }
 
     @Override
@@ -60,6 +93,10 @@ public class Ray2f {
         }
         return true;
     }
-    
+
+    @Override
+    public String toString() {
+        return a + ", " + b;
+    }
     
 }

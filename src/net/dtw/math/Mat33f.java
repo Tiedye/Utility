@@ -97,16 +97,16 @@ public class Mat33f {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + Float.floatToIntBits(this.a1);
-        hash = 67 * hash + Float.floatToIntBits(this.a2);
-        hash = 67 * hash + Float.floatToIntBits(this.a3);
-        hash = 67 * hash + Float.floatToIntBits(this.b1);
-        hash = 67 * hash + Float.floatToIntBits(this.b2);
-        hash = 67 * hash + Float.floatToIntBits(this.b3);
-        hash = 67 * hash + Float.floatToIntBits(this.c1);
-        hash = 67 * hash + Float.floatToIntBits(this.c2);
-        hash = 67 * hash + Float.floatToIntBits(this.c3);
+        int hash = 3;
+        hash = 23 * hash + Float.floatToIntBits(this.a1);
+        hash = 23 * hash + Float.floatToIntBits(this.a2);
+        hash = 23 * hash + Float.floatToIntBits(this.a3);
+        hash = 23 * hash + Float.floatToIntBits(this.b1);
+        hash = 23 * hash + Float.floatToIntBits(this.b2);
+        hash = 23 * hash + Float.floatToIntBits(this.b3);
+        hash = 23 * hash + Float.floatToIntBits(this.c1);
+        hash = 23 * hash + Float.floatToIntBits(this.c2);
+        hash = 23 * hash + Float.floatToIntBits(this.c3);
         return hash;
     }
 
@@ -165,7 +165,9 @@ public class Mat33f {
         return new Mat33f(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
     }
     public static Mat33f rotation(float r){
-        return new Mat33f((float)cos(r), (float)-sin(r), 0.0f, (float)sin(r), (float)cos(r), 0.0f, 0.0f, 0.0f, 1.0f);
+        float sinr = (float)sin(r);
+        float cosr = (float)cos(r);
+        return new Mat33f(cosr, -sinr, 0.0f, sinr, cosr, 0.0f, 0.0f, 0.0f, 1.0f);
     }
     public static Mat33f translation(float x, float y){
         return new Mat33f(1.0f, 0.0f, x, 0.0f, 1.0f, y, 0.0f, 0.0f, 1.0f);

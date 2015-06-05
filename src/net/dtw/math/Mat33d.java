@@ -162,7 +162,9 @@ public class Mat33d {
         return new Mat33d(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
     }
     public static Mat33d rotation(double r){
-        return new Mat33d(cos(r), -sin(r), 0.0, sin(r), cos(r), 0.0, 0.0, 0.0, 1.0);
+        double sinr = sin(r);
+        double cosr = cos(r);
+        return new Mat33d(cosr, -sinr, 0.0, sinr, cosr, 0.0, 0.0, 0.0, 1.0);
     }
     public static Mat33d translation(double x, double y){
         return new Mat33d(1.0, 0.0, x, 0.0, 1.0, y, 0.0, 0.0, 1.0);

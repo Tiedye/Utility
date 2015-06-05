@@ -5,38 +5,38 @@ package net.dtw.math;
  * Represents a convex polygon.
  * @author Daniel <tiedye1@hotmail.com>
  */
-public class Convexd extends Boundd {
+public class Convexf extends Boundf {
     
-    private final Vec2d center;
-    private double rotation;
-    private double scale;
+    private final Vec2f center;
+    private float rotation;
+    private float scale;
     private boolean recent;
-    private final Vec2d[] vertices;
-    private final Vec2d[] cVerticies;
-    private final Ray2d[] sides;
+    private final Vec2f[] vertices;
+    private final Vec2f[] cVerticies;
+    private final Ray2f[] sides;
     
-    private AABBd aabb;
+    private AABBf aabb;
     
     /**
      * Creates a convex polygon with a center and vertices offset by given amounts from the center.
      * @param center The center
      * @param vertices The vertex offset list
      */
-    public Convexd(Vec2d center, Vec2d[] vertices){
+    public Convexf(Vec2f center, Vec2f[] vertices){
         this.center = center;
         this.vertices = vertices;
-        cVerticies = new Vec2d[vertices.length];
-        sides = new Ray2d[vertices.length];
-        rotation = 0.0;
-        scale = 1.0;
+        cVerticies = new Vec2f[vertices.length];
+        sides = new Ray2f[vertices.length];
+        rotation = 0.0f;
+        scale = 1.0f;
     }
 
     private void recalculateSides(){
         if (recent) return;
-        double mX = Double.POSITIVE_INFINITY;
-        double MX = Double.NEGATIVE_INFINITY;
-        double mY = Double.POSITIVE_INFINITY;
-        double MY = Double.NEGATIVE_INFINITY;
+        float mX = Float.POSITIVE_INFINITY;
+        float MX = Float.NEGATIVE_INFINITY;
+        float mY = Float.POSITIVE_INFINITY;
+        float MY = Float.NEGATIVE_INFINITY;
         for (int i = 0; i < vertices.length; i++) {
             cVerticies[i] = vertices[i].rotate(rotation).sum(center);
             mX = cVerticies[i].x < mX ? cVerticies[i].x : mX;
@@ -44,9 +44,9 @@ public class Convexd extends Boundd {
             mY = cVerticies[i].y < mY ? cVerticies[i].y : mY;
             MY = cVerticies[i].y > MY ? cVerticies[i].y : MY;
         }
-        aabb = AABBd.newAABB(MY, mY, MX, mX);
+        aabb = AABBf.newAABB(MY, mY, MX, mX);
         for (int i = 0; i < cVerticies.length; i++) {
-            sides[i] = Ray2d.newRay(cVerticies[i], cVerticies[(i+1)%cVerticies.length]);
+            sides[i] = Ray2f.newRay(cVerticies[i], cVerticies[(i+1)%cVerticies.length]);
         }
         recent = true;
     }
@@ -55,7 +55,7 @@ public class Convexd extends Boundd {
      * Get the rotation transformation of the polygon.
      * @return The rotation scalar
      */
-    public double getRotation(){
+    public float getRotation(){
         return rotation;
     }
     
@@ -63,7 +63,7 @@ public class Convexd extends Boundd {
      * Set the rotation transformation of the polygon.
      * @param rotation The rotation scalar
      */
-    public void setRotation(double rotation){
+    public void setRotation(float rotation){
         this.rotation = rotation;
         recent = false;
     }
@@ -72,7 +72,7 @@ public class Convexd extends Boundd {
      * Get the scale transformation of the polygon.
      * @return The scale
      */
-    public double getScale() {
+    public float getScale() {
         return scale;
     }
 
@@ -80,43 +80,43 @@ public class Convexd extends Boundd {
      * Get the scale transformation of the polygon.
      * @param scale The scale
      */
-    public void setScale(double scale) {
+    public void setScale(float scale) {
         this.scale = scale;
         recent = false;
     }
     
     @Override
-    public boolean inBounds(Vec2d p) {
-        return calcSA(new Boundd() {
+    public boolean inBounds(Vec2f p) {
+        return calcSA(new Boundf() {
             @Override
-            public Ray2d[] getSides() {
-                return new Ray2d[]{};
+            public Ray2f[] getSides() {
+                return new Ray2f[]{};
             }
             @Override
-            public Vec2d[] getVerticies() {
-                return new Vec2d[]{p};
+            public Vec2f[] getVerticies() {
+                return new Vec2f[]{p};
             }
             @Override
-            public AABBd getAABB() {return null;}
+            public AABBf getAABB() {return null;}
             @Override
-            public boolean inBounds(Vec2d p) {return false;}
+            public boolean inBounds(Vec2f p) {return false;}
         }).magnitude() != 0.0;
     }
 
     @Override
-    public Ray2d[] getSides() {
+    public Ray2f[] getSides() {
         recalculateSides();
         return sides;
     }
 
     @Override
-    public Vec2d[] getVerticies() {
+    public Vec2f[] getVerticies() {
         recalculateSides();
         return cVerticies;
     }
 
     @Override
-    public AABBd getAABB() {
+    public AABBf getAABB() {
         return aabb;
     }
     
