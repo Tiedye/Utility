@@ -127,7 +127,7 @@ public class Vec2f {
     public Vec2f rotate(float r) {
         float sinr = (float)java.lang.Math.sin(r);
         float cosr = (float)java.lang.Math.cos(r);
-        return Vec2f.newVec(cosr * x + sinr * y, sinr * x - cosr * y);
+        return Vec2f.newVec(cosr * x + sinr * y, -sinr * x + cosr * y);
     }
     /**
      * The magnitude of this vector.  Stores result for faster lookup.
