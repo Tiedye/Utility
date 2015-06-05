@@ -38,7 +38,7 @@ public class Convexf extends Boundf {
         float mY = Float.POSITIVE_INFINITY;
         float MY = Float.NEGATIVE_INFINITY;
         for (int i = 0; i < vertices.length; i++) {
-            cVerticies[i] = vertices[i].rotate(rotation).sum(center);
+            cVerticies[i] = vertices[i].rotate(rotation).scale(scale).sum(center);
             mX = cVerticies[i].x < mX ? cVerticies[i].x : mX;
             MX = cVerticies[i].x > MX ? cVerticies[i].x : MX;
             mY = cVerticies[i].y < mY ? cVerticies[i].y : mY;
