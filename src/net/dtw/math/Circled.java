@@ -16,7 +16,7 @@ public class Circled extends Boundsd {
     private AABBd bounds;
 
     public Circled() {
-        this(new Vec2d(), 1.0);
+        this(Vec2d.zeroVec(), 1.0);
     }
 
     public Circled(Vec2d center, double radius) {

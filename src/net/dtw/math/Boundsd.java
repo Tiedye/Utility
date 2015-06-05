@@ -29,7 +29,7 @@ public abstract class Boundsd {
                 Vec2d d = c1.center.diff(c2.center);
                 d = d.retract(c1.radius + c2.radius);
                 if (d.magnitude() < 0) return d;
-                else return new Vec2d();
+                else return Vec2d.zeroVec();
             } else {
                 Ray2d[] o2s = o.getSides();
                 Vec2d[] o2v = o.getVerticies();
@@ -57,8 +57,8 @@ public abstract class Boundsd {
                             index = i;
                         }
                     }
-                    Vec2d rs = o2s[index].getDirection();
-                    Vec2d ls = o2s[index - 1 < 0 ? o2v.length - 1 : index - 1].getDirection().scale(-1.0);
+                    Vec2d rs = o2s[index].direction();
+                    Vec2d ls = o2s[index - 1 < 0 ? o2v.length - 1 : index - 1].direction().scale(-1.0);
                     if (minLength.dot(rs) < 0 && minLength.dot(rs) < 0) {
                         lIntersection = minLength;
                     }
@@ -67,7 +67,7 @@ public abstract class Boundsd {
                 if (lIntersection.magnitude() < 0) {
                     return lIntersection;
                 }else{
-                    return new Vec2d();
+                    return Vec2d.zeroVec();
                 }
             }
         } else {
@@ -100,8 +100,8 @@ public abstract class Boundsd {
                             index = i;
                         }
                     }
-                    Vec2d rs = o1s[index].getDirection();
-                    Vec2d ls = o1s[index - 1 < 0 ? o1v.length - 1 : index - 1].getDirection().scale(-1.0);
+                    Vec2d rs = o1s[index].direction();
+                    Vec2d ls = o1s[index - 1 < 0 ? o1v.length - 1 : index - 1].direction().scale(-1.0);
                     if (minLength.dot(rs) < 0 && minLength.dot(rs) < 0) {
                         lIntersection = minLength;
                     }
@@ -110,7 +110,7 @@ public abstract class Boundsd {
                 if (lIntersection.magnitude() < 0) {
                     return lIntersection;
                 }else{
-                    return new Vec2d();
+                    return Vec2d.zeroVec();
                 }
             } else {
                 Ray2d[] o2s = o.getSides();
@@ -130,7 +130,7 @@ public abstract class Boundsd {
                         }
                     }
                     if (mIntersection.magnitude() > 0) {
-                        return new Vec2d();
+                        return Vec2d.zeroVec();
                     }
                     if (mIntersection.magnitude() > lIntersection.magnitude()) {
                         lIntersection = mIntersection;
@@ -146,7 +146,7 @@ public abstract class Boundsd {
                         }
                     }
                     if (mIntersection.magnitude() > 0) {
-                        return new Vec2d();
+                        return Vec2d.zeroVec();
                     }
                     if (mIntersection.magnitude() > lIntersection.magnitude()) {
                         lIntersection = mIntersection;

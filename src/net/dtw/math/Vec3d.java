@@ -75,6 +75,16 @@ public class Vec3d {
         return new Vec3d(x - v.x, y - v.y, z - v.z);
     }
     /**
+     * Creates a new vector that is this vector minus the given vector composed of the given components.
+     * @param x the given x component
+     * @param y the given y component
+     * @param z the given z component
+     * @return the resultant distance
+     */
+    public Vec3d diff(double x, double y, double z) {
+        return new Vec3d(this.x - x, this.y - y, this.z - z);
+    }
+    /**
      * Creates a new vector that is this vector scaled by a given scalar.
      * @param n the given scalar
      * @return the resultant vector
@@ -88,19 +98,6 @@ public class Vec3d {
      */
     public double magnitude() {
         return Math.cbrt(x*x + y*y + z*z);
-    }
-    /**
-     * Calculates the distance of the vector that is this vector minus the vector composed of the given components.
-     * @param x the given x component
-     * @param y the given y component
-     * @param z the given z component
-     * @return the resultant distance
-     */
-    public double distance(double x, double y, double z) {
-        double dx = this.x - x;
-        double dy = this.y - y;
-        double dz = this.z - z;
-        return Math.cbrt(dx*dx + dy*dy + dz*dz);
     }
     /**
      * Calculates the dot product of this vector and the given component.

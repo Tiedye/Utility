@@ -32,7 +32,7 @@ public class Convexd extends Boundsd {
             cVerticies[i] = verticies[i].rotate(rotation).sum(center);
         }
         for (int i = 0; i < cVerticies.length; i++) {
-            sides[i] = new Ray2d(cVerticies[i], cVerticies[(i+1)%cVerticies.length]);
+            sides[i] = Ray2d.newRay(cVerticies[i], cVerticies[(i+1)%cVerticies.length]);
         }
         rotRecent = true;
     }

@@ -173,14 +173,14 @@ public class AABBd extends Boundsd{
     }
     @Override
     public Ray2d[] getSides() {
-        return new Ray2d[]{new Ray2d(new Vec2d(left, top), new Vec2d(right, top)),
-            new Ray2d(new Vec2d(right, top), new Vec2d(right, bottom)),
-            new Ray2d(new Vec2d(right, bottom), new Vec2d(left, bottom)),
-            new Ray2d(new Vec2d(left, bottom), new Vec2d(left, top))};
+        return new Ray2d[]{Ray2d.newRay(Vec2d.newVec(left, top), Vec2d.newVec(right, top)),
+            Ray2d.newRay(Vec2d.newVec(right, top), Vec2d.newVec(right, bottom)),
+            Ray2d.newRay(Vec2d.newVec(right, bottom), Vec2d.newVec(left, bottom)),
+            Ray2d.newRay(Vec2d.newVec(left, bottom), Vec2d.newVec(left, top))};
     }
     @Override
     public Vec2d[] getVerticies() {
-        return new Vec2d[]{new Vec2d(left, top), new Vec2d(right, top), new Vec2d(right, bottom), new Vec2d(left, bottom)};
+        return new Vec2d[]{Vec2d.newVec(left, top), Vec2d.newVec(right, top), Vec2d.newVec(right, bottom), Vec2d.newVec(left, bottom)};
     }
     
     public boolean checkInersection(AABBd other){

@@ -14,12 +14,15 @@ import java.util.Objects;
 public class Ray2d {
     public Vec2d a;
     public Vec2d b;
-
-    public Ray2d() {
-        this(new Vec2d(), new Vec2d());
+    
+    public static Ray2d zeroRay(){
+        return newRay(Vec2d.zeroVec(), Vec2d.zeroVec());
+    }
+    public static Ray2d newRay(Vec2d a, Vec2d b){
+        return new Ray2d(a, b);
     }
 
-    public Ray2d(Vec2d a, Vec2d b) {
+    private Ray2d(Vec2d a, Vec2d b) {
         this.a = a;
         this.b = b;
     }
@@ -35,7 +38,7 @@ public class Ray2d {
         return ab.orthoNorm().scale(ab.cross(ap)/ab.magnitude());
     }
     
-    public Vec2d getDirection(){
+    public Vec2d direction(){
         return b.diff(a);
     }
 
