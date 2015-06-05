@@ -127,7 +127,7 @@ public class Vec2d {
     public Vec2d rotate(double r) {
         double sinr = java.lang.Math.sin(r);
         double cosr = java.lang.Math.cos(r);
-        return Vec2d.newVec(cosr * x - sinr * y, sinr * x + cosr * y);
+        return Vec2d.newVec(cosr * x + sinr * y, sinr * x - cosr * y);
     }
     /**
      * The magnitude of this vector.  Stores result for faster lookup.
