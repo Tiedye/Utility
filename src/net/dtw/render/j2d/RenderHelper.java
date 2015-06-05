@@ -5,6 +5,7 @@
  */
 package net.dtw.render.j2d;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import net.dtw.math.Ray2d;
 import net.dtw.math.Vec2d;
@@ -18,15 +19,17 @@ public class RenderHelper {
     private RenderHelper(){}
     
     public static void DrawArrow(Ray2d ray, Graphics2D g) {
-        g.drawLine((int)ray.a.x, (int)ray.a.y, (int)ray.b.x, (int)ray.b.y);
-        if (ray.a.equals(ray.b)) return;
+        Graphics2D gl = (Graphics2D)g.create();
+        //gl.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f, new float[]{3.0f, 3.0f}, 0.0f));
         Vec2d d = ray.direction();
-        Vec2d dn = d.norm().scale(-5.0);
-        Vec2d on = d.orthoNorm().scale(5.0);
-        Ray2d ta = Ray2d.newRay(ray.b.sum(on).sum(dn), ray.b);
-        Ray2d ba = Ray2d.newRay(ray.b.sum(on.scale(-1.0)).sum(dn), ray.b);
-        g.drawLine((int)ta.a.x, (int)ta.a.y, (int)ta.b.x, (int)ta.b.y);
-        g.drawLine((int)ba.a.x, (int)ba.a.y, (int)ba.b.x, (int)ba.b.y);
+        gl.translate(ray.a.x, ray.a.y);
+        gl.rotate(Math.atan2(d.y, d.x));
+        int m = (int)d.magnitude();
+        gl.drawLine(0, 0, m, 0);
+        if (ray.a.equals(ray.b)) return;
+        //gl.setStroke(new BasicStroke(2.0f));
+        gl.drawLine(m, 0, m-5, 5);
+        gl.drawLine(m, 0, m-5, -5);
     }
     
 }
