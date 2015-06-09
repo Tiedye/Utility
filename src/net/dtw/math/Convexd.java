@@ -117,6 +117,7 @@ public class Convexd extends Boundd {
 
     @Override
     public AABBd getAABB() {
+        recalculateSides();
         return aabb;
     }
     

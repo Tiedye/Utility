@@ -117,6 +117,7 @@ public class Convexf extends Boundf {
 
     @Override
     public AABBf getAABB() {
+        recalculateSides();
         return aabb;
     }
     

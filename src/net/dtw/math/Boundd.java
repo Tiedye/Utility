@@ -51,7 +51,7 @@ public abstract class Boundd {
                     }
                     Vec2d rs = o2s[index].direction();
                     Vec2d ls = o2s[index - 1 < 0 ? o2v.length - 1 : index - 1].direction().scale(-1.0);
-                    if (minLength.dot(rs) < 0 && minLength.dot(rs) > 0) {
+                    if (minLength.dot(rs) < 0 && minLength.dot(ls) < 0) {
                         lIntersection = minLength;
                     }
                 }
@@ -94,7 +94,7 @@ public abstract class Boundd {
                     }
                     Vec2d rs = o1s[index].direction();
                     Vec2d ls = o1s[index - 1 < 0 ? o1v.length - 1 : index - 1].direction().scale(-1.0);
-                    if (minLength.dot(rs) < 0 && minLength.dot(rs) > 0) {
+                    if (minLength.dot(rs) < 0 && minLength.dot(ls) < 0) {
                         lIntersection = minLength;
                     }
                 }

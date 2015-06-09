@@ -44,16 +44,12 @@ public class Vec2i {
         else return reflectY();
     }
     
-    private static int magnitude(int x, int y){
-        return (int)java.lang.Math.sqrt(x*x+y*y);
-    }
-    
     public int magnitude() {
-        return magnitude(x, y);
+        return (int)Math.hypot(x, y);
     }
     
     public int distance(int x, int y) {
-        return magnitude(this.x - x, this.y - y);
+        return (int)Math.hypot(this.x - x, this.y - y);
     }
     
     public Vec2i projectX() {

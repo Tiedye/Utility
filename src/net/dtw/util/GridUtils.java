@@ -27,7 +27,7 @@ public class GridUtils {
         grid[p.x][p.y] = item;
     }
     
-    public static void orItem(int[][] grid, Vec2i p, Integer item) {
+    public static void orItem(int[][] grid, Vec2i p, int item) {
         grid[p.x][p.y] |= item;
     }
     
